@@ -3,6 +3,10 @@
     "version": "0.0.1",
     "licence": "MIT",
 
+    "require": {
+        "silex/silex": "1.2.2"
+    },
+
     "autoload": {
         "psr-4": {
             "AwinHaproxyLogParser\\": "src/"
