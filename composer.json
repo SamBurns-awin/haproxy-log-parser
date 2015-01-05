@@ -1,0 +1,11 @@
+{
+    "name":    "zanox/haproxy-log-parser",
+    "version": "0.0.1",
+    "licence": "MIT",
+
+    "autoload": {
+        "psr-4": {
+            "AwinHaproxyLogParser\\": "src/"
+        }
+    }
+}
