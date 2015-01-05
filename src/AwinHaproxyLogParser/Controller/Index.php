@@ -2,16 +2,19 @@
 namespace AwinHaproxyLogParser\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Twig_Environment as TwigEnvironment;
 
 class Index
 {
     /**
      * @return Response
      */
-    public function indexAction()
+    public function indexAction(TwigEnvironment $twigEnvironment)
     {
+        $content = $twigEnvironment->render('index.twig');
+
         $response = new Response();
-        $response->setContent('hello world');
+        $response->setContent($content);
         return $response;
     }
 }
