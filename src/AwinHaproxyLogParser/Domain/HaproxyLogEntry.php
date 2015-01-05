@@ -1,4 +1,5 @@
 <?php
+namespace AwinHaproxyLogParser\Domain;
 
 class HaproxyLogEntry
 {

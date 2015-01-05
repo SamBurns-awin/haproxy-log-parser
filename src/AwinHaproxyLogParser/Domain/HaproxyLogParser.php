@@ -1,7 +1,5 @@
 <?php
-
-require('HaproxyTcpLogEntry.php');
-require('HaproxyHttpLogEntry.php');
+namespace AwinHaproxyLogParser\Domain;
 
 class HaproxyLogParser
 {

@@ -1,6 +1,5 @@
 <?php
-
-require_once('HaproxyLogEntry.php');
+namespace AwinHaproxyLogParser\Domain;
 
 class HaproxyTcpLogEntry extends HaproxyLogEntry
 {

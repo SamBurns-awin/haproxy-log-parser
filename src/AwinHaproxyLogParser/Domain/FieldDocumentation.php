@@ -1,4 +1,5 @@
 <?php
+namespace AwinHaproxyLogParser\Domain;
 
 class FieldDocumentation
 {
@@ -55,7 +56,7 @@ class FieldDocumentation
         // re-key output
         $out = array();
         for ($i=0; $i<count($matches[0]); $i++) {
-            $out[ $matches[0][$i] ] = preg_replace("/\s+/", " ", $matches[1][$i]);
+            $out[ $matches[0][$i] ] = preg_replace('/\s+/', " ", $matches[1][$i]);
         }
         return $out;
     }
