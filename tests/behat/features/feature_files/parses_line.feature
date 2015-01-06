@@ -5,5 +5,5 @@ Feature: Parsing log file lines
 
   Scenario: Some determinable business situation
     Given I have a log parser
-    When I give the log parser the line 'haproxy[14387]: 10.0.1.2:33313 [06/Feb/2009:12:12:51.443] fnt bck/srv1 0/0/5007 212 -- 0/0/0/0/3 0/0'
+    When I give the log parser the line of HTTP log 'haproxy[14389]: 10.0.1.2:33317 [06/Feb/2009:12:14:14.655] http-in static/srv1 10/0/30/69/109 200 2750 - - ---- 1/1/1/1/0 0/0 {1wt.eu} {} "GET /index.html HTTP/1.1"'
     Then The parser should be saying that the date is in February

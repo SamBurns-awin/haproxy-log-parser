@@ -5,18 +5,18 @@ use Behat\Behat\Context\Context;
 use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
 use Behat\Gherkin\Node\TableNode;
-use AwinHaproxyLogParser\Domain\HaproxyLogParser;
-use AwinHaproxyLogParser\Domain\HaproxyTcpLogEntry;
+use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLineFactory;
+use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLine;
 
 /**
  * Defines application features from the specific context.
  */
 class FeatureContext implements Context, SnippetAcceptingContext
 {
-    /** @var HaproxyLogParser */
+    /** @var LogLineFactory */
     private $parser;
 
-    /** @var HaproxyTcpLogEntry */
+    /** @var LogLine */
     private $parsingResult;
 
     public function __construct()
@@ -29,15 +29,15 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function iHaveALogParser()
     {
-        $this->parser = new HaproxyLogParser();
+        $this->parser = new LogLineFactory();
     }
 
     /**
-     * @When I give the log parser the line :lineToParse
+     * @When I give the log parser the line of HTTP log :arg2
      */
-    public function iGiveTheLogParserTheLine($lineToParse)
+    public function iGiveTheLogParserTheLineOfHttpLog($lineToParse)
     {
-        $this->parsingResult = $this->parser->parse($lineToParse);
+        $this->parsingResult = $this->parser->createLogLine($lineToParse);
     }
 
     /**
@@ -45,6 +45,6 @@ class FeatureContext implements Context, SnippetAcceptingContext
      */
     public function theParserShouldBeSayingThatTheDateIsInFebruary()
     {
-        PHPUnit_Framework_Assert::assertEquals('06/Feb/2009:12:12:51.443', $this->parsingResult->accept_date);
+        \PHPUnit_Framework_Assert::assertEquals('06/Feb/2009:12:14:14.655', $this->parsingResult->getFieldByName('accept_date'));
     }
 }
