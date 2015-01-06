@@ -39,4 +39,12 @@ class HttpLogLine extends AbstractLogLine implements LogLine
             'http_request'
         );
     }
+
+    /**
+     * @return string
+     */
+    public function getDocLabel()
+    {
+        return 'http';
+    }
 }

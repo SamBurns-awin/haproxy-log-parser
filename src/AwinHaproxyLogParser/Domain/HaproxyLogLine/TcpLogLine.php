@@ -31,4 +31,12 @@ class TcpLogLine extends AbstractLogLine implements LogLine
             'backend_queue'
         );
     }
+
+    /**
+     * @return string
+     */
+    public function getDocLabel()
+    {
+        return 'tcp';
+    }
 }

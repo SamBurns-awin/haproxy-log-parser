@@ -3,7 +3,7 @@ namespace AwinHaproxyLogParser\Domain\HaproxyLogLine;
 
 abstract class AbstractLogLine implements LogLine
 {
-    /** @var string */
+    /** @var string[] */
     private $logLineAssocArray = array();
 
     /**
@@ -20,6 +20,8 @@ abstract class AbstractLogLine implements LogLine
 
     /**
      * @param string $fieldName
+     *
+     * @return string
      */
     public function getFieldByName($fieldName)
     {
@@ -30,4 +32,17 @@ abstract class AbstractLogLine implements LogLine
      * @return string[]
      */
     abstract protected function getFieldNames();
+
+    /**
+     * @return string[]
+     */
+    public function toArray()
+    {
+        return $this->logLineAssocArray;
+    }
+
+    /**
+     * @return string
+     */
+    abstract public function getDocLabel();
 }
