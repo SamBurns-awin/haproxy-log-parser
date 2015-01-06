@@ -3,7 +3,7 @@ namespace AwinHaproxyLogParser\Domain;
 
 class HaproxyLogParser
 {
-    protected $logClasses = array('HaproxyTcpLogEntry', 'HaproxyHttpLogEntry');
+    protected $logClasses = array('\AwinHaproxyLogParser\Domain\HaproxyTcpLogEntry', '\AwinHaproxyLogParser\Domain\HaproxyHttpLogEntry');
 
     function __construct()
     {}
