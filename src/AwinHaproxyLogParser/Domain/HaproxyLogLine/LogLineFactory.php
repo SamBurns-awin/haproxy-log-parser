@@ -3,30 +3,30 @@ namespace AwinHaproxyLogParser\Domain\HaproxyLogLine;
 
 class LogLineFactory
 {
+    /** @var string */
+    private $httpLogLineRegex = '/(\S+)\[(\d+)\]: ([\d\.]+):(\d+) \[(\S+)\] (\S+) (\S+)\/(\S+) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+) (\d+) (\d+) (\S) (\S) (\S{4}) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+) (\d+)\/(\d+) {(.*?)} {(.*?)} "(.*?)"$/';
+
+    /** @var string */
+    private $tcpLogLineRegex = '/(\S+)\[(\d+)\]: ([\d\.]+):(\d+) \[(\S+)\] (\S+) (\S+)\/(\S+) (\d+)\/(\d+)\/(\d+) (\d+) (\S{2}) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+) (\d+)\/(\d+)$/';
+
     /**
      * @param $lineAsText
      * @return LogLine
      */
     public function createLogLine($lineAsText)
     {
-        $noOfTextFields = $this->countTextFields($lineAsText);
+        $regexMatches = array();
 
-        switch ($noOfTextFields) {
-            case 18:
-                return new HttpLogLine($lineAsText);
-            case 10:
-                return new TcpLogLine();
-            default:
-                throw new \InvalidArgumentException('Don\'t know what to do with text lines of ' . $noOfTextFields . ' fields');
+        if (preg_match($this->httpLogLineRegex, $lineAsText, $regexMatches)) {
+            array_shift($regexMatches);
+            return new HttpLogLine($regexMatches);
         }
-    }
 
-    /**
-     * @param string $lineAsText
-     * @return int
-     */
-    private function countTextFields($lineAsText)
-    {
-        return count(explode(' ', $lineAsText));
+        if (preg_match($this->tcpLogLineRegex, $lineAsText, $regexMatches)) {
+            array_shift($regexMatches);
+            return new TcpLogLine($regexMatches);
+        }
+
+        throw new \InvalidArgumentException('Don\'t know what to do with input line');
     }
 }

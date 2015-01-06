@@ -35,22 +35,17 @@ class HttpLogLine implements LogLine
         'http_request'
     );
 
-    private $regexOfLogLine =  '/(\S+)\[(\d+)\]: ([\d\.]+):(\d+) \[(\S+)\] (\S+) (\S+)\/(\S+) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+) (\d+) (\d+) (\S) (\S) (\S{4}) (\d+)\/(\d+)\/(\d+)\/(\d+)\/(\d+) (\d+)\/(\d+) {(.*?)} {(.*?)} "(.*?)"$/';
-
     /** @var string */
     private $logLineAssocArray = array();
 
     /**
-     * @param string $logLineString
+     * @param string[] $logLineAsNumericalArray
      */
-    public function __construct($logLineString)
+    public function __construct($logLineAsNumericalArray)
     {
-        $logLineNumericalArray = array();
-        preg_match($this->regexOfLogLine, $logLineString, $logLineNumericalArray);
-        array_shift($logLineNumericalArray);
         $logLineArrayKeys = $this->fieldNames;
 
-        foreach ($logLineNumericalArray as $logLineField) {
+        foreach ($logLineAsNumericalArray as $logLineField) {
             $this->logLineAssocArray[array_shift($logLineArrayKeys)] = $logLineField;
         }
     }
