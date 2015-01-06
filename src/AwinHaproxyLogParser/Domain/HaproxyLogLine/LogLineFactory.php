@@ -13,7 +13,7 @@ class LogLineFactory
 
         switch ($noOfTextFields) {
             case 18:
-                return new HttpLogLine();
+                return new HttpLogLine($lineAsText);
             case 10:
                 return new TcpLogLine();
             default:
