@@ -1,13 +1,16 @@
 <?php
 namespace AwinHaproxyLogParser\Domain;
 
-use Exception;
-
 class FieldDocumentation
 {
+    /** @var string */
     protected $docUrl = 'https://raw.githubusercontent.com/langpavel/haproxy-doc/master/version-1-5/configuration.txt';
+
+    /** @var string */
     protected $cacheFile = 'haproxy-doc-cache.json';
-    protected $cacheValidity = 86400;
+
+    /** @var int */
+    private $cacheValidity = 86400;
 
     public function __construct()
     {
@@ -15,6 +18,9 @@ class FieldDocumentation
         $this->cacheFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->cacheFile;
     }
 
+    /**
+     * @return bool
+     */
     protected function cacheNeedsRefreshing()
     {
         // cache is missing
@@ -36,13 +42,13 @@ class FieldDocumentation
 
         // HTTP log fields
         if(! preg_match_all('/8.2.3. HTTP log format.*?\nDetailed fields description :\n(.*?)\n8.3. /s', $doc, $matches)) {
-            throw new Exception("Couldn't find HTTP log format section");
+            throw new \Exception("Couldn't find HTTP log format section");
         }
         $fieldData['http'] = $this->extractFields($matches[1][0]);
 
         // TCP log format
         if(! preg_match_all('/8.2.2. TCP log format.*?\nDetailed fields description :\n(.*?)\n8.2.3. /s', $doc, $matches)) {
-            throw new Exception("Couldn't find TCP log format section");
+            throw new \Exception("Couldn't find TCP log format section");
         }
         $fieldData['tcp'] = $this->extractFields($matches[1][0]);
 
@@ -50,6 +56,10 @@ class FieldDocumentation
         file_put_contents($this->cacheFile, json_encode($fieldData, JSON_PRETTY_PRINT));
     }
 
+    /**
+     * @param string $text
+     * @return string[]
+     */
     public function extractFields($text)
     {
         preg_match_all('/  - "(.*?)" (.*?)\n\n/s', $text, $matches);
