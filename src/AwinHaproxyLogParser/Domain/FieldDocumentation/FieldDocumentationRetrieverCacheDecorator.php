@@ -27,7 +27,7 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
     {
         if ($this->cacheNeedsRefreshing()) {
             $fieldDocumentation = $this->nextSource->getFieldDocumentation();
-            $this->cache($fieldDocumentation);
+            $this->writeToCache($fieldDocumentation);
         } else {
             $fieldDocumentation = $this->getFromCache();
         }
@@ -40,22 +40,29 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
      */
     private function cacheNeedsRefreshing()
     {
-        // cache is missing
-        if (!file_exists($this->cacheFile)) {
-            return true;
-        }
-        // cache is stale
-        if (time() - filemtime($this->cacheFile) > $this->cacheValidity) {
-            return true;
-        }
-        // must be good
-        return false;
+        return !$this->cacheIsMissing() && !$this->cacheIsStale();
+    }
+
+    /**
+     * @return bool
+     */
+    private function cacheIsMissing()
+    {
+        return !file_exists($this->cacheFile);
+    }
+
+    /**
+     * @return bool
+     */
+    private function cacheIsStale()
+    {
+        return time() - filemtime($this->cacheFile) > $this->cacheValidity;
     }
 
     /**
      * @param FieldDocumentation $fieldDocumentation
      */
-    private function cache(FieldDocumentation $fieldDocumentation)
+    private function writeToCache(FieldDocumentation $fieldDocumentation)
     {
         file_put_contents($this->cacheFile, json_encode($fieldDocumentation->toArray(), JSON_PRETTY_PRINT));
     }
