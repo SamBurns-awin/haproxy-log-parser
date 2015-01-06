@@ -20,14 +20,12 @@ class Parse
 
         $logLine = $this->getLogLine($query);
 
-        $logEntry = $logLine->toArray();
-
         $doc = new FieldDocumentation();
         $doc->load();
 
         $responseBody = '';
 
-        foreach ($logEntry as $field => $value) {
+        foreach ($logLine->toArray() as $field => $value) {
             $responseBody .= $field . '</br>';
             $responseBody .= $value . '</br>';
             if (!empty($doc->{$logLine->getDocLabel()}->$field)) {
