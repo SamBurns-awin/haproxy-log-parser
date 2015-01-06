@@ -3,6 +3,9 @@ namespace AwinHaproxyLogParser\Domain\FieldDocumentation;
 
 class WebFieldDocumentationRetriever implements FieldDocumentationRetriever
 {
+    /** @var string */
+    private $docUrl = 'https://raw.githubusercontent.com/langpavel/haproxy-doc/master/version-1-5/configuration.txt';
+
     /**
      * @throws \Exception
      *
@@ -26,5 +29,22 @@ class WebFieldDocumentationRetriever implements FieldDocumentationRetriever
         $fieldData['tcp'] = $this->extractFields($matches[1][0]);
 
         return new FieldDocumentation($fieldData);
+    }
+
+    /**
+     * @param string $text
+     * @return string[]
+     */
+    private function extractFields($text)
+    {
+        preg_match_all('/  - "(.*?)" (.*?)\n\n/s', $text, $matches);
+        array_shift($matches);
+
+        // re-key output
+        $out = array();
+        for ($i=0; $i<count($matches[0]); $i++) {
+            $out[ $matches[0][$i] ] = preg_replace('/\s+/', " ", $matches[1][$i]);
+        }
+        return $out;
     }
 }

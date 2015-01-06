@@ -7,10 +7,10 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
     private $nextSource;
 
     /** @var string */
-    private $cacheFile = 'haproxy-doc-cache.json';
+    private $cacheFilename = 'haproxy-doc-cache.json';
 
     /** @var int */
-    private $cacheValidity = 86400;
+    private $cacheValidity = 1; //86400;
 
     /**
      * @param FieldDocumentationRetriever $fieldDocumentationRetriever
@@ -48,7 +48,7 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
      */
     private function cacheIsMissing()
     {
-        return !file_exists($this->cacheFile);
+        return !file_exists($this->getCacheFilePath());
     }
 
     /**
@@ -56,7 +56,15 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
      */
     private function cacheIsStale()
     {
-        return time() - filemtime($this->cacheFile) > $this->cacheValidity;
+        return time() - filemtime($this->getCacheFilePath()) > $this->cacheValidity;
+    }
+
+    /**
+     * @return string
+     */
+    private function getCacheFilePath()
+    {
+        return sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->cacheFilename;
     }
 
     /**
@@ -64,7 +72,7 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
      */
     private function writeToCache(FieldDocumentation $fieldDocumentation)
     {
-        file_put_contents($this->cacheFile, json_encode($fieldDocumentation->toArray(), JSON_PRETTY_PRINT));
+        file_put_contents($this->getCacheFilePath(), json_encode($fieldDocumentation->toArray(), JSON_PRETTY_PRINT));
     }
 
     /**
@@ -72,7 +80,7 @@ class FieldDocumentationRetrieverCacheDecorator implements FieldDocumentationRet
      */
     private function getFromCache()
     {
-        $fieldData = json_decode(file_get_contents($this->cacheFile));
+        $fieldData = json_decode(file_get_contents($this->getCacheFilePath()), true);
         return new FieldDocumentation($fieldData);
     }
 }
