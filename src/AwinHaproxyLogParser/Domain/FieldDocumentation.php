@@ -1,13 +1,15 @@
 <?php
 namespace AwinHaproxyLogParser\Domain;
 
+use Exception;
+
 class FieldDocumentation
 {
     protected $docUrl = 'https://raw.githubusercontent.com/langpavel/haproxy-doc/master/version-1-5/configuration.txt';
     protected $cacheFile = 'haproxy-doc-cache.json';
     protected $cacheValidity = 86400;
 
-    function __construct()
+    public function __construct()
     {
         // qualify the cache file location
         $this->cacheFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $this->cacheFile;
@@ -48,7 +50,7 @@ class FieldDocumentation
         file_put_contents($this->cacheFile, json_encode($fieldData, JSON_PRETTY_PRINT));
     }
 
-    function extractFields($text)
+    public function extractFields($text)
     {
         preg_match_all('/  - "(.*?)" (.*?)\n\n/s', $text, $matches);
         array_shift($matches);
@@ -68,7 +70,7 @@ class FieldDocumentation
         $this->http = $fieldData->http;
     }
 
-    function load()
+    public function load()
     {
         if ($this->cacheNeedsRefreshing()) {
             $this->buildCacheFile();
