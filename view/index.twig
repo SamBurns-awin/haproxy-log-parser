@@ -1,12 +1,14 @@
 <html>
     <head>
         <title>James' HAProxy log file parser</title>
-        <link type="text/css" rel="stylesheet" href="/haproxy-log-parser.css"/>
+        <link type="text/css"        rel="stylesheet" href="/static?filename=haproxy-log-parser.css"/>
+        <script src="/static?filename=haproxy-log-parser.js"></script>
     </head>
     <body>
         <form>
             <label for="log-file-line">Line of log file</label>
             <input type="text" id="log-file-line"/>
+            <button type="button" id="submit-button" onclick="updateOutputArea();">Submit</button>
         </form>
         <div id="output-area"></div>
     </body>

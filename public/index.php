@@ -5,8 +5,10 @@ require_once __DIR__ . '/../bootstrap.php';
 use Silex\Application;
 use AwinHaproxyLogParser\Controller\Index as IndexController;
 use AwinHaproxyLogParser\Controller\Parse as ParseController;
+use AwinHaproxyLogParser\Controller\StaticAssets as StaticAssetsController;
 use Symfony\Component\HttpFoundation\Request;
 use Silex\Provider\TwigServiceProvider;
+use Symfony\Component\HttpFoundation\Response;
 
 $application = new Application();
 
@@ -15,9 +17,10 @@ $application->register($twigServiceProvider, array('twig.path' => APPLICATION_RO
 $twigEnvironment = $application['twig'];
 
 $application->get(
-    '/haproxy-log-parser.css',
-    function () {
-        return file_get_contents(APPLICATION_ROOT_DIR . '/public/haproxy-log-parser.css');
+    'static',
+    function (Request $request) {
+        $controller = new StaticAssetsController();
+        return $controller->serveAction($request);
     }
 );
 
@@ -34,6 +37,13 @@ $application->post(
     function (Request $request) {
         $controller = new ParseController();
         return $controller->parseAction($request);
+    }
+);
+
+$application->error(
+    function (Exception $e, $code) {
+        $content = var_export(array($e->getMessage(), $e->getTrace()), true);
+        return new Response($content);
     }
 );
 

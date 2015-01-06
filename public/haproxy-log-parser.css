@@ -1,3 +1,8 @@
 input#log-file-line {
     width: 900px;
 }
+
+button#submit-button {
+    width:  80px;
+    height: 40px;
+}
