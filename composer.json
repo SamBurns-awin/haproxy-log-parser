@@ -8,6 +8,11 @@
         "twig/twig":   "1.16.3"
     },
 
+    "require-dev": {
+        "behat/behat":     "3.*@stable",
+        "phpunit/phpunit": "4.*@stable"
+    },
+
     "autoload": {
         "psr-0": {
             "AwinHaproxyLogParser\\": "src/"
