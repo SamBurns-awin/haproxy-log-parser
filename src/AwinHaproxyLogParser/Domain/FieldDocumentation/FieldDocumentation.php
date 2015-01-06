@@ -25,7 +25,7 @@ class FieldDocumentation
         return
             isset($this->fieldDocumentationArray[$protocol][$fieldName]) ?
             $this->fieldDocumentationArray[$protocol][$fieldName] :
-            '';
+            'No documentation available';
     }
 
     /**

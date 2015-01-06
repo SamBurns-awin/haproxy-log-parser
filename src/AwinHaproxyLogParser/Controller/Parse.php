@@ -1,11 +1,13 @@
 <?php
 namespace AwinHaproxyLogParser\Controller;
 
+use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentation;
 use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLineFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentationRetriever;
 use Twig_Environment as TwigEnvironment;
+use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLine;
 
 class Parse
 {
@@ -19,16 +21,16 @@ class Parse
     private $logLineFactory;
 
     /**
-     * @param TwigEnvironment             $twigEnvionment
+     * @param TwigEnvironment             $twigEnvironment
      * @param FieldDocumentationRetriever $fieldDocumentationRetriever
      * @param LogLineFactory              $logLineFactory
      */
     public function __construct(
-        TwigEnvironment             $twigEnvionment,
+        TwigEnvironment             $twigEnvironment,
         FieldDocumentationRetriever $fieldDocumentationRetriever,
         LogLineFactory              $logLineFactory
     ) {
-        $this->twigEnvironment             = $twigEnvionment;
+        $this->twigEnvironment             = $twigEnvironment;
         $this->fieldDocumentationRetriever = $fieldDocumentationRetriever;
         $this->logLineFactory              = $logLineFactory;
     }
@@ -40,30 +42,51 @@ class Parse
      */
     public function parseAction(Request $request)
     {
-        $query = $request->get('query');
-
-        $logLine = $this->logLineFactory->createLogLine($query);
+        $logLine = $this->createLogLineObjectFromRequest($request);
 
         $protocol = $logLine->getDocLabel();
 
         $fieldDocumentation = $this->fieldDocumentationRetriever->getFieldDocumentation();
 
-        $responseBody = '';
+        $results = $this->createDisplayableResults($logLine, $fieldDocumentation, $protocol);
 
-        foreach ($logLine->toArray() as $field => $value) {
-            $responseBody .= $field . '</br>';
-            $responseBody .= $value . '</br>';
-            $fieldDocumentationText = $fieldDocumentation->getFieldDocumentation($protocol, $field);
-
-            if (!empty($fieldDocumentationText)) {
-                $responseBody .= $fieldDocumentationText . '</br>';
-            }
-            $responseBody .= '</br>';
-        }
+        $content = $this->twigEnvironment->render('results.twig', array('fieldList' => $results));
 
         $response = new JsonResponse();
-        $response->setContent($responseBody);
+        $response->setContent($content);
         return $response;
+    }
+
+    /**
+     * @param Request $request
+     * @return LogLine
+     */
+    private function createLogLineObjectFromRequest(Request $request)
+    {
+        $query = $request->get('query');
+        return $this->logLineFactory->createLogLine($query);
+    }
+
+    /**
+     * @param LogLine            $logLine
+     * @param FieldDocumentation $fieldDocumentation
+     * @param string             $protocol
+     *
+     * @return array
+     */
+    private function createDisplayableResults(LogLine $logLine, FieldDocumentation $fieldDocumentation, $protocol)
+    {
+        $results = array();
+
+        foreach ($logLine->toArray() as $field => $value) {
+            $result = array();
+            $result['title']         = $field;
+            $result['value']         = $value;
+            $result['documentation'] = $fieldDocumentation->getFieldDocumentation($protocol, $field);
+            $results[] = $result;
+        }
+
+        return $results;
     }
 }
 

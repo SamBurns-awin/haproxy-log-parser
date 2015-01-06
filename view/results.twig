@@ -1,0 +1,7 @@
+Hover over a field for more info...<br/>
+<br/>
+<ul>
+    {% for field in fieldList %}
+        <li><span title="{{ field.documentation }}">{{ field.title }}: {{ field.value }}</span></li>
+    {% endfor %}
+</ul>
