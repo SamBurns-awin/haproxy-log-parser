@@ -1,0 +1,7 @@
+suites:
+
+    Main:
+        namespace: AwinHaproxyLogParser
+        spec_prefix: AwinHaproxyLogParserSpec
+        src_path: src/
+        spec_path:  tests/phpspec/

@@ -10,7 +10,8 @@
 
     "require-dev": {
         "behat/behat":     "3.*@stable",
-        "phpunit/phpunit": "4.*@stable"
+        "phpunit/phpunit": "4.*@stable",
+        "phpspec/phpspec": "2.*@stable"
     },
 
     "autoload": {
