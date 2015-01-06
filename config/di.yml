@@ -1,0 +1,17 @@
+services:
+
+    controller.parse:
+        class: \AwinHaproxyLogParser\Controller\Parse
+        arguments:
+            - "@field-documentation-retriever"
+            - "@log-line-factory"
+
+    field-documentation-retriever:
+        class: \AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentationRetrieverCacheDecorator
+        arguments: ["@web-field-documentation-retriever"]
+
+    web-field-documentation-retriever:
+        class: \AwinHaproxyLogParser\Domain\FieldDocumentation\WebFieldDocumentationRetriever
+
+    log-line-factory:
+        class: \AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLineFactory

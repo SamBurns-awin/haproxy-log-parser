@@ -4,14 +4,29 @@ namespace AwinHaproxyLogParser\Controller;
 use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLineFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLine;
-use AwinHaproxyLogParser\Domain\FieldDocumentation\WebFieldDocumentationRetriever;
-use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentationRetrieverCacheDecorator;
 use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentationRetriever;
 use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentation;
 
 class Parse
 {
+    /** @var FieldDocumentationRetriever */
+    private $fieldDocumentationRetriever;
+
+    /** @var LogLineFactory */
+    private $logLineFactory;
+
+    /**
+     * @param FieldDocumentationRetriever $fieldDocumentationRetriever
+     * @param LogLineFactory              $logLineFactory
+     */
+    public function __construct(
+        FieldDocumentationRetriever $fieldDocumentationRetriever,
+        LogLineFactory              $logLineFactory
+    ) {
+        $this->fieldDocumentationRetriever = $fieldDocumentationRetriever;
+        $this->logLineFactory              = $logLineFactory;
+    }
+
     /**
      * @param Request $request
      *
@@ -21,11 +36,11 @@ class Parse
     {
         $query = $request->get('query');
 
-        $logLine = $this->getLogLine($query);
+        $logLine = $this->logLineFactory->createLogLine($query);
 
         $protocol = $logLine->getDocLabel();
 
-        $fieldDocumentation = $this->getFieldDocumentation();
+        $fieldDocumentation = $this->fieldDocumentationRetriever->getFieldDocumentation();
 
         $responseBody = '';
 
@@ -43,36 +58,6 @@ class Parse
         $response = new JsonResponse();
         $response->setContent($responseBody);
         return $response;
-    }
-
-    /**
-     * @param $logLineString
-     * @return LogLine
-     */
-    private function getLogLine($logLineString)
-    {
-        $factory = new LogLineFactory();
-        return $factory->createLogLine($logLineString);
-    }
-
-    /**
-     * @return FieldDocumentation
-     */
-    private function getFieldDocumentation()
-    {
-        $fieldDocumentationRetriever = $this->getFieldDocumentationRetriever();
-        $fieldDocumentation = $fieldDocumentationRetriever->getFieldDocumentation();
-        return $fieldDocumentation;
-    }
-
-    /**
-     * @return FieldDocumentationRetriever
-     */
-    private function getFieldDocumentationRetriever()
-    {
-        $webFieldDocumentationRetriever = new WebFieldDocumentationRetriever();
-        $cacheDecorator = new FieldDocumentationRetrieverCacheDecorator($webFieldDocumentationRetriever);
-        return $cacheDecorator;
     }
 }
 
