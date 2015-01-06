@@ -14,8 +14,8 @@ use Twig_Environment as TwigEnvironment;
 
 
 $serviceContainer = getServiceContainer();
-$application = getApplicationObject();
-$twigEnvironment = getTwigEnvironment($application);
+$application      = getApplicationObject();
+$twigEnvironment  = getTwigEnvironment($application);
 $serviceContainer->set('twig-environment', $twigEnvironment);
 
 addRegularRoutesToApplication($application, $serviceContainer);
