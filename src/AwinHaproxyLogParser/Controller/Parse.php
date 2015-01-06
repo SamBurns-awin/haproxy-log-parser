@@ -5,10 +5,13 @@ use AwinHaproxyLogParser\Domain\HaproxyLogLine\LogLineFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentationRetriever;
-use AwinHaproxyLogParser\Domain\FieldDocumentation\FieldDocumentation;
+use Twig_Environment as TwigEnvironment;
 
 class Parse
 {
+    /** @var TwigEnvironment */
+    private $twigEnvironment;
+
     /** @var FieldDocumentationRetriever */
     private $fieldDocumentationRetriever;
 
@@ -16,13 +19,16 @@ class Parse
     private $logLineFactory;
 
     /**
+     * @param TwigEnvironment             $twigEnvionment
      * @param FieldDocumentationRetriever $fieldDocumentationRetriever
      * @param LogLineFactory              $logLineFactory
      */
     public function __construct(
+        TwigEnvironment             $twigEnvionment,
         FieldDocumentationRetriever $fieldDocumentationRetriever,
         LogLineFactory              $logLineFactory
     ) {
+        $this->twigEnvironment             = $twigEnvionment;
         $this->fieldDocumentationRetriever = $fieldDocumentationRetriever;
         $this->logLineFactory              = $logLineFactory;
     }

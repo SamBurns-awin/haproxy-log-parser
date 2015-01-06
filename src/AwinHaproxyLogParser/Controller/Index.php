@@ -6,12 +6,23 @@ use Twig_Environment as TwigEnvironment;
 
 class Index
 {
+    /** @var TwigEnvironment */
+    private $twigEnvironment;
+
+    /**
+     * @param TwigEnvironment $twigEnvironment
+     */
+    public function __construct(TwigEnvironment $twigEnvironment)
+    {
+        $this->twigEnvironment = $twigEnvironment;
+    }
+
     /**
      * @return Response
      */
-    public function indexAction(TwigEnvironment $twigEnvironment)
+    public function indexAction()
     {
-        $content = $twigEnvironment->render('index.twig');
+        $content = $this->twigEnvironment->render('index.twig');
 
         $response = new Response();
         $response->setContent($content);
